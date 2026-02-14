@@ -13,10 +13,10 @@ async function api(url, options = {}) {
 
 const AutoAPI = {
   // Drivers
-  getDrivers: (available) => api(`/api/drivers${available ? '?available=true' : ''}`),
-  registerDriver: (body) => api('/api/drivers', { method: 'POST', body: JSON.stringify(body) }),
-  loginDriver: (phone, password) => api('/api/drivers/login', { method: 'POST', body: JSON.stringify({ phone, password }) }),
-  updateDriver: (id, body) => api(`/api/drivers/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  getDrivers: (available) => api(`https://glide-aa8l.onrender.com/api/drivers${available ? '?available=true' : ''}`),
+  registerDriver: (body) => api('https://glide-aa8l.onrender.com/api/drivers', { method: 'POST', body: JSON.stringify(body) }),
+  loginDriver: (phone, password) => api('https://glide-aa8l.onrender.com/api/drivers/login', { method: 'POST', body: JSON.stringify({ phone, password }) }),
+  updateDriver: (id, body) => api(`https://glide-aa8l.onrender.com/api/drivers/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
 
   // Passengers
   registerPassenger: (body) => api('https://glide-aa8l.onrender.com/api/passengers', { method: 'POST', body: JSON.stringify(body) }),
@@ -25,24 +25,24 @@ const AutoAPI = {
   // Requests (Bookings)
   getRequests: (params = {}) => {
     const q = new URLSearchParams(params).toString();
-    return api(`/api/requests${q ? '?' + q : ''}`);
+    return api(`https://glide-aa8l.onrender.com/api/requests${q ? '?' + q : ''}`);
   },
-  createRequest: (body) => api('/api/requests', { method: 'POST', body: JSON.stringify(body) }),
-  updateRequest: (id, status) => api(`/api/requests/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
+  createRequest: (body) => api('https://glide-aa8l.onrender.com/api/requests', { method: 'POST', body: JSON.stringify(body) }),
+  updateRequest: (id, status) => api(`https://glide-aa8l.onrender.com/api/requests/${id}`, { method: 'PATCH', body: JSON.stringify({ status }) }),
 
   // Reviews
-  getReviews: (driverId) => api(`/api/reviews${driverId ? '?driverId=' + driverId : ''}`),
-  createReview: (body) => api('/api/reviews', { method: 'POST', body: JSON.stringify(body) }),
+  getReviews: (driverId) => api(`https://glide-aa8l.onrender.com/api/reviews${driverId ? '?driverId=' + driverId : ''}`),
+  createReview: (body) => api('https://glide-aa8l.onrender.com/api/reviews', { method: 'POST', body: JSON.stringify(body) }),
 
   // Complaints
-  getComplaints: () => api('/api/complaints'),
-  createComplaint: (body) => api('/api/complaints', { method: 'POST', body: JSON.stringify(body) }),
-  resolveComplaint: (id) => api(`/api/complaints/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'resolved' }) }),
+  getComplaints: () => api('https://glide-aa8l.onrender.com/api/complaints'),
+  createComplaint: (body) => api('https://glide-aa8l.onrender.com/api/complaints', { method: 'POST', body: JSON.stringify(body) }),
+  resolveComplaint: (id) => api(`https://glide-aa8l.onrender.com/api/complaints/${id}`, { method: 'PATCH', body: JSON.stringify({ status: 'resolved' }) }),
 
   // Admin
-  getDriversAll: () => api('/api/drivers'),
+  getDriversAll: () => api('https://glide-aa8l.onrender.com/api/drivers'),
   getPassengersAll: () => api('https://glide-aa8l.onrender.com/api/passengers'),
-  getBookingsAll: () => api('/api/requests'),
-  getReviewsAll: () => api('/api/reviews'),
-  getComplaintsAll: () => api('/api/complaints')
+  getBookingsAll: () => api('https://glide-aa8l.onrender.com/api/requests'),
+  getReviewsAll: () => api('https://glide-aa8l.onrender.com/api/reviews'),
+  getComplaintsAll: () => api('https://glide-aa8l.onrender.com/api/complaints')
 };
