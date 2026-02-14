@@ -82,7 +82,7 @@ app.post('/api/drivers/login', async (req, res) => {
 });
 
 // --- Passengers ---
-app.get('/api/passengers', async (req, res) => {
+app.get('https://glide-aa8l.onrender.com/api/passengers', async (req, res) => {
   try {
     const list = await Passenger.find().lean();
     res.json(list.map(p => ({ ...p, id: p._id.toString() })));
@@ -91,7 +91,7 @@ app.get('/api/passengers', async (req, res) => {
   }
 });
 
-app.post('/api/passengers', async (req, res) => {
+app.post('https://glide-aa8l.onrender.com/api/passengers', async (req, res) => {
   try {
     const { name, phone, password, email, emergencyContact } = req.body;
     if (!name || !phone || !password) return res.status(400).json({ error: 'Name, phone, password required' });
@@ -104,7 +104,7 @@ app.post('/api/passengers', async (req, res) => {
   }
 });
 
-app.post('/api/passengers/login', async (req, res) => {
+app.post('https://glide-aa8l.onrender.com/api/passengers/login', async (req, res) => {
   try {
     const { phone, password } = req.body;
     const passenger = await Passenger.findOne({ phone, password });

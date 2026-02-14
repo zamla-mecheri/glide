@@ -4,7 +4,10 @@ const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/autoco
 
 async function connect() {
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(MONGODB_URI,{
+      serverSelectionTimeoutMS: 30000, // 30 seconds instead of 10
+
+    });
     console.log('MongoDB connected');
   } catch (err) {
     console.error('MongoDB connection error:', err.message);

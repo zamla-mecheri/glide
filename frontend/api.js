@@ -19,8 +19,8 @@ const AutoAPI = {
   updateDriver: (id, body) => api(`/api/drivers/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
 
   // Passengers
-  registerPassenger: (body) => api('/api/passengers', { method: 'POST', body: JSON.stringify(body) }),
-  loginPassenger: (phone, password) => api('/api/passengers/login', { method: 'POST', body: JSON.stringify({ phone, password }) }),
+  registerPassenger: (body) => api('https://glide-aa8l.onrender.com/api/passengers', { method: 'POST', body: JSON.stringify(body) }),
+  loginPassenger: (phone, password) => api('https://glide-aa8l.onrender.com/api/passengers/login', { method: 'POST', body: JSON.stringify({ phone, password }) }),
 
   // Requests (Bookings)
   getRequests: (params = {}) => {
@@ -41,7 +41,7 @@ const AutoAPI = {
 
   // Admin
   getDriversAll: () => api('/api/drivers'),
-  getPassengersAll: () => api('/api/passengers'),
+  getPassengersAll: () => api('https://glide-aa8l.onrender.com/api/passengers'),
   getBookingsAll: () => api('/api/requests'),
   getReviewsAll: () => api('/api/reviews'),
   getComplaintsAll: () => api('/api/complaints')
