@@ -54,8 +54,7 @@ Glide Innovators
 
 ### Hosted Project Link
 
-[https://your-project-link-here.com](https://your-project-link-here.com)
-
+https://github.com/zamla-mecheri/glide
 ---
 
 ### Project Description
