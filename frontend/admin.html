@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - AutoConnect</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛺</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <header class="bg-purple-600 p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-white"><i class="fa-solid fa-shield-halved"></i> AutoConnect Admin</a>
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="text-white text-sm hover:underline">Home</a>
+                <button onclick="logout()" class="bg-white text-purple-600 px-4 py-2 rounded-lg text-sm font-bold hidden" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="loginSection" class="max-w-md mx-auto mt-20 bg-white p-8 rounded-2xl shadow-lg">
+        <div class="text-center mb-6">
+            <i class="fa-solid fa-user-shield text-6xl text-purple-600 mb-4"></i>
+            <h2 class="text-2xl font-bold">Admin Login</h2>
+        </div>
+        <div class="space-y-4">
+            <input id="adminUsername" type="text" placeholder="Username" class="w-full p-3 border rounded-lg">
+            <input id="adminPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-lg">
+            <button onclick="loginAdmin()" class="w-full bg-purple-600 text-white font-bold py-3 rounded-lg hover:bg-purple-700">Login</button>
+            <p class="text-sm text-gray-500 text-center">Default: admin / admin123</p>
+        </div>
+    </div>
+
+    <div id="dashboardSection" class="hidden max-w-6xl mx-auto p-4 space-y-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Total Drivers</p>
+                        <p class="text-3xl font-bold text-blue-600" id="totalDrivers">0</p>
+                    </div>
+                    <i class="fa-solid fa-users text-4xl text-blue-600 opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Total Passengers</p>
+                        <p class="text-3xl font-bold text-green-600" id="totalPassengers">0</p>
+                    </div>
+                    <i class="fa-solid fa-user-group text-4xl text-green-600 opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Total Bookings</p>
+                        <p class="text-3xl font-bold text-yellow-600" id="totalBookings">0</p>
+                    </div>
+                    <i class="fa-solid fa-calendar-check text-4xl text-yellow-600 opacity-20"></i>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-xl shadow-sm">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-gray-500 text-sm">Pending Complaints</p>
+                        <p class="text-3xl font-bold text-red-600" id="totalComplaints">0</p>
+                    </div>
+                    <i class="fa-solid fa-exclamation-triangle text-4xl text-red-600 opacity-20"></i>
+                </div>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+            <div class="flex border-b overflow-x-auto">
+                <button onclick="showTab('drivers')" id="tabDrivers" class="px-6 py-4 font-bold text-purple-600 border-b-2 border-purple-600 whitespace-nowrap">Drivers</button>
+                <button onclick="showTab('passengers')" id="tabPassengers" class="px-6 py-4 font-bold text-gray-500 border-b-2 border-transparent whitespace-nowrap">Passengers</button>
+                <button onclick="showTab('bookings')" id="tabBookings" class="px-6 py-4 font-bold text-gray-500 border-b-2 border-transparent whitespace-nowrap">Bookings</button>
+                <button onclick="showTab('reviews')" id="tabReviews" class="px-6 py-4 font-bold text-gray-500 border-b-2 border-transparent whitespace-nowrap">Reviews</button>
+                <button onclick="showTab('complaints')" id="tabComplaints" class="px-6 py-4 font-bold text-gray-500 border-b-2 border-transparent whitespace-nowrap">Complaints</button>
+            </div>
+
+            <div id="contentDrivers" class="p-6">
+                <h3 class="text-xl font-bold mb-4">All Drivers</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Phone</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Auto</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Rating</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="driversTable" class="bg-white divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="contentPassengers" class="p-6 hidden">
+                <h3 class="text-xl font-bold mb-4">All Passengers</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Name</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Phone</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Email</th>
+                                <th class="px-4 py-3 text-left text-xs font-medium text-gray-500">Emergency</th>
+                            </tr>
+                        </thead>
+                        <tbody id="passengersTable" class="bg-white divide-y"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="contentBookings" class="p-6 hidden">
+                <h3 class="text-xl font-bold mb-4">All Bookings</h3>
+                <div id="bookingsList" class="space-y-3"></div>
+            </div>
+
+            <div id="contentReviews" class="p-6 hidden">
+                <h3 class="text-xl font-bold mb-4">All Reviews</h3>
+                <div id="reviewsList" class="space-y-3"></div>
+            </div>
+
+            <div id="contentComplaints" class="p-6 hidden">
+                <h3 class="text-xl font-bold mb-4">Complaints Management</h3>
+                <div id="complaintsList" class="space-y-3"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        const ADMIN_CREDS = { username: 'admin', password: 'admin123' };
+
+        function loginAdmin() {
+            const u = document.getElementById('adminUsername').value;
+            const p = document.getElementById('adminPassword').value;
+
+            if (u === ADMIN_CREDS.username && p === ADMIN_CREDS.password) {
+                sessionStorage.setItem('adminLoggedIn', 'true');
+                showDashboard();
+                loadData();
+            } else {
+                alert('Invalid credentials!');
+            }
+        }
+
+        function showDashboard() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+        }
+
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+        }
+
+        async function loadData() {
+            try {
+                const [drivers, passengers, requests, complaints, reviews] = await Promise.all([
+                    AutoAPI.getDrivers(), AutoAPI.getPassengersAll(),
+                    AutoAPI.getBookingsAll(), AutoAPI.getComplaintsAll(), AutoAPI.getReviewsAll()
+                ]);
+                document.getElementById('totalDrivers').textContent = drivers.length;
+                document.getElementById('totalPassengers').textContent = passengers.length;
+                document.getElementById('totalBookings').textContent = requests.length;
+                document.getElementById('totalComplaints').textContent = complaints.filter(c => c.status === 'pending').length;
+                loadDrivers(drivers);
+                loadPassengers(passengers);
+                loadBookings(requests);
+                loadReviews(reviews, drivers);
+                loadComplaints(complaints);
+            } catch (e) {
+                alert('Failed to load data: ' + e.message + '. Ensure backend is running.');
+            }
+        }
+
+        function showTab(tab) {
+            ['Drivers', 'Passengers', 'Bookings', 'Reviews', 'Complaints'].forEach(t => {
+                document.getElementById('content' + t).classList.add('hidden');
+                const btn = document.getElementById('tab' + t);
+                btn.classList.remove('text-purple-600', 'border-purple-600');
+                btn.classList.add('text-gray-500', 'border-transparent');
+            });
+
+            const tabName = tab.charAt(0).toUpperCase() + tab.slice(1);
+            document.getElementById('content' + tabName).classList.remove('hidden');
+            const btn = document.getElementById('tab' + tabName);
+            btn.classList.remove('text-gray-500', 'border-transparent');
+            btn.classList.add('text-purple-600', 'border-purple-600');
+        }
+
+        function loadDrivers(drivers = []) {
+            const tbody = document.getElementById('driversTable');
+            
+            if (drivers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="px-4 py-8 text-center text-gray-500">No drivers</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = drivers.map(d => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 font-medium">${d.name}</td>
+                    <td class="px-4 py-3">${d.phone}</td>
+                    <td class="px-4 py-3">${d.autoNumber || d.auto || '-'}</td>
+                    <td class="px-4 py-3"><span class="text-yellow-500">⭐ ${d.rating || 5.0}</span></td>
+                    <td class="px-4 py-3"><span class="px-2 py-1 text-xs rounded-full ${d.available ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-700'}">${d.available ? 'Online' : 'Offline'}</span></td>
+                </tr>
+            `).join('');
+        }
+
+        function loadPassengers(passengers = []) {
+            const tbody = document.getElementById('passengersTable');
+            
+            if (passengers.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="px-4 py-8 text-center text-gray-500">No passengers</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = passengers.map(p => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-4 py-3 font-medium">${p.name}</td>
+                    <td class="px-4 py-3">${p.phone}</td>
+                    <td class="px-4 py-3">${p.email || '-'}</td>
+                    <td class="px-4 py-3">${p.emergencyContact || '-'}</td>
+                </tr>
+            `).join('');
+        }
+
+        function loadBookings(requests = []) {
+            const list = document.getElementById('bookingsList');
+
+            if (requests.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-8">No bookings</p>';
+                return;
+            }
+
+            list.innerHTML = requests.reverse().map(b => {
+                const colors = {pending: 'gray', accepted: 'green', rejected: 'red', completed: 'blue'};
+                const c = colors[b.status] || 'gray';
+
+                return `
+                    <div class="bg-gray-50 p-4 rounded-lg border">
+                        <div class="flex justify-between mb-2">
+                            <div>
+                                <p class="font-bold">${b.passengerName} → ${b.driverName}</p>
+                                <p class="text-sm text-gray-600">${b.pickup} → ${b.destination}</p>
+                                <p class="text-xs text-gray-500 mt-1">${new Date(b.createdAt).toLocaleString()}</p>
+                            </div>
+                            <div class="text-right">
+                                <span class="bg-${c}-100 text-${c}-700 px-3 py-1 rounded-full text-xs font-bold">${b.status.toUpperCase()}</span>
+                                <p class="text-lg font-bold text-green-700 mt-2">₹${b.fare}</p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadReviews(reviews = [], drivers = []) {
+            const list = document.getElementById('reviewsList');
+
+            if (reviews.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-8">No reviews</p>';
+                return;
+            }
+
+            list.innerHTML = reviews.reverse().map(r => {
+                const driver = drivers.find(d => d.id === r.driverId);
+                return `
+                    <div class="bg-gray-50 p-4 rounded-lg border">
+                        <div class="flex justify-between mb-2">
+                            <div>
+                                <p class="font-bold">${r.passengerName} → ${driver ? driver.name : 'Unknown'}</p>
+                                <p class="text-sm text-gray-600">${driver ? (driver.autoNumber || driver.auto || '-') : '-'}</p>
+                            </div>
+                            <span class="text-yellow-500 text-xl">${'⭐'.repeat(r.rating)}</span>
+                        </div>
+                        <p class="text-gray-700 mb-2">${r.comment}</p>
+                        <p class="text-xs text-gray-500">${new Date(r.date).toLocaleString()}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function loadComplaints(complaints = []) {
+            const list = document.getElementById('complaintsList');
+
+            if (complaints.length === 0) {
+                list.innerHTML = '<p class="text-gray-500 text-center py-8">No complaints</p>';
+                return;
+            }
+
+            list.innerHTML = complaints.reverse().map(c => `
+                <div class="bg-${c.status === 'pending' ? 'red' : 'green'}-50 p-4 rounded-lg border">
+                    <div class="flex justify-between mb-3">
+                        <div>
+                            <p class="font-bold">${c.passengerName}</p>
+                            <p class="text-sm text-gray-600">Type: ${c.type}</p>
+                            <p class="text-gray-700 mt-2">${c.description}</p>
+                            <p class="text-xs text-gray-500 mt-2">${new Date(c.createdAt).toLocaleString()}</p>
+                        </div>
+                        <span class="bg-${c.status === 'pending' ? 'red' : 'green'}-200 text-${c.status === 'pending' ? 'red' : 'green'}-800 px-3 py-1 rounded-full text-xs font-bold h-fit">${c.status.toUpperCase()}</span>
+                    </div>
+                    ${c.status === 'pending' ? `<button onclick="resolveComplaint('${c.id}')" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold">Mark Resolved</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        async function resolveComplaint(id) {
+            try {
+                await AutoAPI.resolveComplaint(id);
+                alert('Complaint resolved!');
+                loadData();
+            } catch (e) {
+                alert(e.message || 'Failed');
+            }
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                sessionStorage.removeItem('adminLoggedIn');
+                showLogin();
+            }
+        }
+
+        window.onload = function() {
+            if (sessionStorage.getItem('adminLoggedIn') === 'true') {
+                showDashboard();
+                loadData();
+            }
+        };
+    </script>
+</body>
+</html>

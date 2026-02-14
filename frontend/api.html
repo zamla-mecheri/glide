@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Demo - AutoConnect</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; line-height: 1.6; }
+        #output { background: #f4f4f4; padding: 15px; border-radius: 8px; margin-top: 20px; }
+        .btn { background: #007bff; color: white; border: none; padding: 10px 15px; cursor: pointer; border-radius: 4px; }
+        .btn:hover { background: #0056b3; }
+    </style>
+</head>
+<body>
+
+    <h2>AutoConnect API Demo</h2>
+    <button id="getData" class="btn">Fetch Data</button>
+
+    <div id="output">
+        <p>Data will appear here...</p>
+    </div>
+
+    <script>
+        const outputDiv = document.getElementById('output');
+        const btn = document.getElementById('getData');
+
+        btn.addEventListener('click', () => {
+            outputDiv.innerHTML = 'Loading...';
+
+            fetch('https://jsonplaceholder.typicode.com/posts/1')
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.json();
+                })
+                .then(data => {
+                    outputDiv.innerHTML = `
+                        <h3>${data.title}</h3>
+                        <p>${data.body}</p>
+                    `;
+                })
+                .catch(error => {
+                    outputDiv.innerHTML = `<p style="color:red;">Error: ${error.message}</p>`;
+                });
+        });
+    </script>
+</body>
+</html>

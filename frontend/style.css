@@ -1,0 +1,59 @@
+/* General Layout */
+body {
+    background-color: #f3f4f6;
+    font-family: system-ui, -apple-system, sans-serif;
+    margin: 0;
+}
+
+/* Header Styles */
+.main-header {
+    background-color: #facc15;
+    padding: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+/* Card & Section Styles */
+.card {
+    background-color: #ffffff;
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    margin-bottom: 1.5rem;
+}
+
+/* Driver Card Specifics */
+.driver-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #facc15;
+    background: white;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+}
+
+/* Buttons */
+.btn-primary {
+    width: 100%;
+    background-color: #facc15;
+    font-weight: bold;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+.btn-call {
+    background-color: #22c55e;
+    color: white;
+    padding: 0.75rem;
+    border-radius: 999px;
+    text-decoration: none;
+}
+
+/* Utility */
+.hidden { display: none; }

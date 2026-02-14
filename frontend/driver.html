@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Driver Login - AutoConnect</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛺</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+    
+    <header class="bg-yellow-400 p-4 shadow-md sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto flex justify-between items-center">
+            <a href="index.html" class="text-2xl font-bold text-gray-800"><i class="fa-solid fa-rickshaw"></i> AutoConnect Driver</a>
+            <div class="flex items-center gap-2">
+                <a href="index.html" class="text-sm text-gray-700 hover:underline">Home</a>
+                <button onclick="logout()" class="bg-red-600 text-white px-4 py-2 rounded-lg text-sm hidden" id="logoutBtn">Logout</button>
+            </div>
+        </div>
+    </header>
+
+    <div id="loginSection" class="max-w-md mx-auto mt-10 bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center">Driver Login</h2>
+        <div class="space-y-4">
+            <input id="loginPhone" type="tel" placeholder="Phone Number" class="w-full p-3 border rounded-lg">
+            <input id="loginPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-lg">
+            <button onclick="loginDriver()" class="w-full bg-yellow-400 font-bold py-3 rounded-lg hover:bg-yellow-500">Login</button>
+            <button onclick="showRegister()" class="w-full bg-gray-200 font-bold py-3 rounded-lg hover:bg-gray-300">New Driver? Register</button>
+        </div>
+    </div>
+
+    <div id="registerSection" class="hidden max-w-md mx-auto mt-10 bg-white p-6 rounded-2xl shadow-lg">
+        <h2 class="text-2xl font-bold mb-6 text-center">Driver Registration</h2>
+        <div class="space-y-4">
+            <input id="regName" type="text" placeholder="Full Name" class="w-full p-3 border rounded-lg">
+            <input id="regPhone" type="tel" placeholder="Phone Number" class="w-full p-3 border rounded-lg">
+            <input id="regPassword" type="password" placeholder="Password" class="w-full p-3 border rounded-lg">
+            <input id="regAuto" type="text" placeholder="Auto Number (KA-01-EF-1234)" class="w-full p-3 border rounded-lg">
+            <input id="regLicense" type="text" placeholder="License Number" class="w-full p-3 border rounded-lg">
+            <button onclick="registerDriver()" class="w-full bg-green-600 text-white font-bold py-3 rounded-lg hover:bg-green-700">Register</button>
+            <button onclick="showLogin()" class="w-full bg-gray-200 font-bold py-3 rounded-lg hover:bg-gray-300">Back to Login</button>
+        </div>
+    </div>
+
+    <div id="dashboardSection" class="hidden max-w-4xl mx-auto p-4 space-y-6">
+        
+        <section class="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 class="text-xl font-bold mb-4"><i class="fa-solid fa-user mr-2 text-yellow-500"></i> My Profile</h2>
+            <div class="grid grid-cols-2 gap-4">
+                <div><p class="text-gray-600 text-sm">Name</p><p class="font-bold" id="profileName">-</p></div>
+                <div><p class="text-gray-600 text-sm">Phone</p><p class="font-bold" id="profilePhone">-</p></div>
+                <div><p class="text-gray-600 text-sm">Auto Number</p><p class="font-bold" id="profileAuto">-</p></div>
+                <div><p class="text-gray-600 text-sm">License</p><p class="font-bold" id="profileLicense">-</p></div>
+                <div><p class="text-gray-600 text-sm">Rating</p><p class="font-bold text-yellow-500" id="profileRating">⭐ 5.0</p></div>
+                <div>
+                    <p class="text-gray-600 text-sm">Status</p>
+                    <label class="relative inline-flex items-center cursor-pointer">
+                        <input type="checkbox" id="availabilityToggle" class="sr-only peer" onchange="toggleAvailability()">
+                        <div class="w-11 h-6 bg-gray-200 rounded-full peer peer-checked:after:translate-x-full after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-600"></div>
+                        <span class="ml-3 text-sm font-medium" id="availabilityText">Offline</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <section class="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 class="text-xl font-bold mb-4"><i class="fa-solid fa-bell mr-2 text-blue-500"></i> Passenger Requests</h2>
+            <div id="requestsList" class="space-y-3">
+                <p class="text-gray-500 text-center py-4">No pending requests</p>
+            </div>
+        </section>
+
+        <section class="bg-white p-6 rounded-2xl shadow-sm">
+            <h2 class="text-xl font-bold mb-4"><i class="fa-solid fa-star mr-2 text-yellow-500"></i> My Reviews</h2>
+            <div id="reviewsList" class="space-y-3">
+                <p class="text-gray-500 text-center py-4">No reviews yet</p>
+            </div>
+        </section>
+
+    </div>
+
+    <script src="api.js"></script>
+    <script>
+        let currentDriver = null;
+
+        function showLogin() {
+            document.getElementById('loginSection').classList.remove('hidden');
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.add('hidden');
+            document.getElementById('logoutBtn').classList.add('hidden');
+        }
+
+        function showRegister() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('registerSection').classList.remove('hidden');
+        }
+
+        function showDashboard() {
+            document.getElementById('loginSection').classList.add('hidden');
+            document.getElementById('registerSection').classList.add('hidden');
+            document.getElementById('dashboardSection').classList.remove('hidden');
+            document.getElementById('logoutBtn').classList.remove('hidden');
+        }
+
+        async function registerDriver() {
+            const name = document.getElementById('regName').value;
+            const phone = document.getElementById('regPhone').value;
+            const password = document.getElementById('regPassword').value;
+            const autoNum = document.getElementById('regAuto').value;
+            const license = document.getElementById('regLicense').value;
+            if (!name || !phone || !password || !autoNum || !license) { alert('Please fill all fields'); return; }
+            try {
+                await AutoAPI.registerDriver({ name, phone, password, autoNumber: autoNum, license });
+                alert('Registration successful!');
+                showLogin();
+            } catch (e) {
+                alert(e.message || 'Registration failed');
+            }
+        }
+
+        async function loginDriver() {
+            const phone = document.getElementById('loginPhone').value;
+            const password = document.getElementById('loginPassword').value;
+            if (!phone || !password) { alert('Enter phone and password'); return; }
+            try {
+                const driver = await AutoAPI.loginDriver(phone, password);
+                currentDriver = driver;
+                sessionStorage.setItem('currentDriver', JSON.stringify(driver));
+                loadDashboard();
+                showDashboard();
+            } catch (e) {
+                alert(e.message || 'Invalid credentials');
+            }
+        }
+
+        function loadDashboard() {
+            document.getElementById('profileName').textContent = currentDriver.name;
+            document.getElementById('profilePhone').textContent = currentDriver.phone;
+            document.getElementById('profileAuto').textContent = currentDriver.autoNumber || currentDriver.auto || '-';
+            document.getElementById('profileLicense').textContent = currentDriver.license || '-';
+            document.getElementById('profileRating').textContent = `⭐ ${currentDriver.rating || 5.0}`;
+            document.getElementById('availabilityToggle').checked = currentDriver.available;
+            document.getElementById('availabilityText').textContent = currentDriver.available ? 'Online' : 'Offline';
+            loadRequests();
+            loadReviews();
+        }
+
+        async function toggleAvailability() {
+            const isAvailable = document.getElementById('availabilityToggle').checked;
+            document.getElementById('availabilityText').textContent = isAvailable ? 'Online' : 'Offline';
+            currentDriver.available = isAvailable;
+            try {
+                await AutoAPI.updateDriver(currentDriver.id, { available: isAvailable });
+            } catch (e) {
+                alert(e.message || 'Failed to update');
+            }
+        }
+
+        async function loadRequests() {
+            const list = document.getElementById('requestsList');
+            try {
+                const requests = await AutoAPI.getRequests({ driverId: currentDriver.id, status: 'pending' });
+                if (!requests.length) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-4">No pending requests</p>';
+                    return;
+                }
+                list.innerHTML = requests.map(req => `
+                    <div class="bg-blue-50 p-4 rounded-lg border">
+                        <div class="flex justify-between mb-3">
+                            <div>
+                                <p class="font-bold">${req.passengerName}</p>
+                                <p class="text-sm text-gray-600">${req.pickup} → ${req.destination}</p>
+                                <p class="text-sm text-green-600">${req.distance} km</p>
+                            </div>
+                            <span class="text-lg font-bold text-green-700">₹${req.fare}</span>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="acceptRequest('${req.id}')" class="flex-1 bg-green-600 text-white py-2 rounded-lg">Accept</button>
+                            <button onclick="rejectRequest('${req.id}')" class="flex-1 bg-red-600 text-white py-2 rounded-lg">Reject</button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = `<p class="text-red-500 text-center py-4">${e.message}</p>`;
+            }
+        }
+
+        async function acceptRequest(id) {
+            try {
+                await AutoAPI.updateRequest(id, 'accepted');
+                alert('Request accepted!');
+                loadRequests();
+            } catch (e) {
+                alert(e.message || 'Failed');
+            }
+        }
+
+        async function rejectRequest(id) {
+            try {
+                await AutoAPI.updateRequest(id, 'rejected');
+                loadRequests();
+            } catch (e) {
+                alert(e.message || 'Failed');
+            }
+        }
+
+        async function loadReviews() {
+            const list = document.getElementById('reviewsList');
+            try {
+                const reviews = await AutoAPI.getReviews(currentDriver.id);
+                if (!reviews.length) {
+                    list.innerHTML = '<p class="text-gray-500 text-center py-4">No reviews yet</p>';
+                    return;
+                }
+                list.innerHTML = reviews.map(r => `
+                    <div class="bg-gray-50 p-4 rounded-lg">
+                        <div class="flex justify-between mb-2">
+                            <p class="font-bold">${r.passengerName}</p>
+                            <span class="text-yellow-500">${'⭐'.repeat(r.rating)}</span>
+                        </div>
+                        <p class="text-gray-700">${r.comment}</p>
+                        <p class="text-xs text-gray-500 mt-2">${new Date(r.date).toLocaleDateString()}</p>
+                    </div>
+                `).join('');
+            } catch (e) {
+                list.innerHTML = `<p class="text-red-500 text-center py-4">${e.message}</p>`;
+            }
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                currentDriver = null;
+                sessionStorage.removeItem('currentDriver');
+                showLogin();
+            }
+        }
+
+        window.onload = function() {
+            const saved = sessionStorage.getItem('currentDriver');
+            if (saved) {
+                currentDriver = JSON.parse(saved);
+                loadDashboard();
+                showDashboard();
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoConnect - Find Nearby Auto-Rickshaws</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛺</text></svg>">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <header class="bg-yellow-400 p-6 shadow-md">
+        <div class="max-w-2xl mx-auto text-center">
+            <h1 class="text-3xl font-bold text-gray-800"><i class="fa-solid fa-rickshaw mr-2"></i> AutoConnect</h1>
+            <p class="text-gray-700 mt-2">Find nearby auto-rickshaws, know fares, and connect with drivers</p>
+        </div>
+    </header>
+
+    <main class="max-w-2xl mx-auto p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <a href="passenger.html" class="block bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-l-4 border-green-500 group">
+                <div class="text-4xl mb-4 text-green-600 group-hover:scale-110 transition"><i class="fa-solid fa-user"></i></div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Find Ride</h2>
+                <p class="text-gray-600 text-sm">Book a ride, calculate fare, see available drivers, and get contact details</p>
+            </a>
+
+            <a href="driver.html" class="block bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-l-4 border-yellow-500 group">
+                <div class="text-4xl mb-4 text-yellow-600 group-hover:scale-110 transition"><i class="fa-solid fa-rickshaw"></i></div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Driver</h2>
+                <p class="text-gray-600 text-sm">Register as driver, go online, accept passenger requests</p>
+            </a>
+
+            <a href="admin.html" class="block bg-white p-8 rounded-2xl shadow-lg hover:shadow-xl transition border-l-4 border-purple-500 group">
+                <div class="text-4xl mb-4 text-purple-600 group-hover:scale-110 transition"><i class="fa-solid fa-shield-halved"></i></div>
+                <h2 class="text-xl font-bold text-gray-800 mb-2">Admin</h2>
+                <p class="text-gray-600 text-sm">Manage drivers, passengers, bookings, and complaints</p>
+            </a>
+        </div>
+
+        <div class="mt-8 bg-yellow-50 p-4 rounded-xl border border-yellow-200">
+            <h3 class="font-bold text-yellow-800 mb-2"><i class="fa-solid fa-info-circle mr-2"></i> Govt Approved Fare</h3>
+            <p class="text-sm text-yellow-900">Base (1.5 km): ₹30 | Per km after: ₹15</p>
+        </div>
+
+        <p class="mt-4 text-center text-sm text-gray-500">
+            <a href="../backend/backend.html" class="text-blue-600 hover:underline">Quick Driver Add (Backend)</a>
+        </p>
+    </main>
+</body>
+</html>

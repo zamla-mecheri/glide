@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rickshaw Connect - Driver Add (Backend)</title>
+    <style>
+        :root { --primary-yellow: #FFCC00; --green-btn: #28a745; --bg: #f8f9fa; }
+        body { font-family: sans-serif; background: var(--bg); padding: 20px; }
+        .container { max-width: 500px; margin: auto; background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .form-section { background: #eee; padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        input { width: 90%; padding: 10px; margin: 5px 0; border-radius: 5px; border: 1px solid #ccc; }
+        .submit-btn { background: #333; color: white; border: none; padding: 10px; width: 100%; border-radius: 5px; cursor: pointer; }
+        .card { border-left: 6px solid var(--primary-yellow); padding: 15px; margin: 10px 0; border-radius: 8px; border: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
+        .call-btn { background: var(--green-btn); color: white; text-decoration: none; padding: 8px 15px; border-radius: 5px; font-weight: bold; }
+        .fare-res { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🛺 Rickshaw Connect - Add Driver</h2>
+    
+    <div class="form-section">
+        <h4>Register as a Driver</h4>
+        <input type="text" id="driverName" placeholder="Driver Name">
+        <input type="text" id="driverLoc" placeholder="Location (e.g. MG Road)">
+        <input type="text" id="driverAuto" placeholder="Auto Number (KA-01-EF-1234)">
+        <input type="text" id="driverPhone" placeholder="Phone Number">
+        <input type="password" id="driverPassword" placeholder="Password">
+        <input type="text" id="driverLicense" placeholder="License (optional)">
+        <button class="submit-btn" onclick="addDriver()">Add My Auto</button>
+    </div>
+
+    <h3>Nearby Drivers</h3>
+    <div id="driver-list"></div>
+
+    <h3>Fare Calculator (Govt rate: 1.5km base ₹30, ₹15/km)</h3>
+    <input type="number" id="dist" placeholder="Distance in KM">
+    <button onclick="calc()">Calculate</button>
+    <p>Estimated Fare: <span class="fare-res" id="fare-out">₹ 0</span></p>
+</div>
+
+<script>
+    async function addDriver() {
+        const name = document.getElementById('driverName').value;
+        const loc = document.getElementById('driverLoc').value;
+        const autoNum = document.getElementById('driverAuto').value;
+        const phone = document.getElementById('driverPhone').value;
+        const password = document.getElementById('driverPassword').value;
+        const license = document.getElementById('driverLicense').value;
+        if (!name || !phone) return alert("Please fill name and phone");
+        try {
+            const res = await fetch('/api/drivers', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, phone, password: password || '1234', autoNumber: autoNum, location: loc, license: license || '' })
+            });
+            const data = await res.json().catch(() => ({}));
+            if (!res.ok) throw new Error(data.error || res.statusText);
+            alert("Driver Registered! Go to frontend to login.");
+            displayDrivers();
+        } catch (e) {
+            alert(e.message || "Registration failed. Ensure backend is running.");
+        }
+    }
+
+    async function displayDrivers() {
+        const list = document.getElementById('driver-list');
+        try {
+            const res = await fetch('/api/drivers');
+            const drivers = await res.json();
+            list.innerHTML = drivers.length ? drivers.map(d => {
+                const loc = d.location || d.loc || '-';
+                const auto = d.autoNumber || d.auto || '-';
+                return `<div class="card"><div><strong>${d.name}</strong><br><small>📍 ${loc}</small><br><small># ${auto}</small></div><a href="tel:${d.phone}" class="call-btn">Call</a></div>`;
+            }).join('') : '<p class="text-gray-500">No drivers yet. Add one above.</p>';
+        } catch (e) {
+            list.innerHTML = '<p class="text-red-500">Failed to load. Ensure backend is running.</p>';
+        }
+    }
+
+    function calc() {
+        let km = document.getElementById('dist').value;
+        let price = km <= 1.5 ? 30 : 30 + (km - 1.5) * 15;
+        document.getElementById('fare-out').innerText = "₹ " + Math.round(price);
+    }
+
+    window.onload = displayDrivers;
+</script>
+
+</body>
+</html>

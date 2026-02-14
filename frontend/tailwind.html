@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoConnect - Live Ride Finder (Firebase Demo)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans">
+
+    <header class="bg-yellow-400 p-4 shadow-md sticky top-0 z-50">
+        <div class="flex justify-between items-center max-w-md mx-auto">
+            <a href="index.html" class="text-2xl font-bold text-gray-800"><i class="fa-solid fa-rickshaw"></i> AutoConnect</a>
+            <div id="statusIndicator" class="h-3 w-3 bg-red-500 rounded-full border border-white"></div>
+        </div>
+    </header>
+
+    <main class="max-w-md mx-auto p-4 space-y-6">
+
+        <section class="bg-white p-6 rounded-2xl shadow-sm border-t-4 border-yellow-500">
+            <h2 class="text-lg font-bold mb-4 flex items-center"><i class="fa-solid fa-calculator mr-2"></i> Fare Estimator</h2>
+            <div class="space-y-4">
+                <input id="distance" type="number" placeholder="Enter Distance (km)" class="w-full p-3 border rounded-lg focus:outline-yellow-400">
+                <button onclick="calculateFare()" class="w-full bg-yellow-400 font-bold py-3 rounded-lg hover:bg-yellow-500 transition">Get Estimate</button>
+                <div id="fareResult" class="hidden mt-3 p-3 bg-green-50 border border-green-200 rounded-lg text-center">
+                    <p class="text-gray-600">Standard Fare: <span id="amount" class="text-xl font-bold text-green-700">₹0</span></p>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="text-lg font-bold mb-4 flex items-center"><i class="fa-solid fa-location-dot mr-2 text-red-500"></i> Active Drivers Nearby</h2>
+            <div id="driverList" class="space-y-3">
+                <p class="text-gray-400 text-center py-4">Add Firebase config to see live drivers</p>
+            </div>
+        </section>
+
+        <section class="bg-gray-800 p-4 rounded-xl text-white">
+            <h3 class="font-bold mb-2">Driver Mode (Firebase)</h3>
+            <button onclick="toggleDriverStatus()" id="driverBtn" class="w-full bg-gray-600 py-2 rounded font-bold transition">GO ONLINE</button>
+        </section>
+
+    </main>
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT.appspot.com",
+            messagingSenderId: "YOUR_ID",
+            appId: "YOUR_APP_ID"
+        };
+        
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        let isDriverOnline = false;
+        let driverId = "driver_101";
+
+        function calculateFare() {
+            const dist = document.getElementById('distance').value;
+            const fare = dist <= 1.5 ? 30 : 30 + (dist - 1.5) * 15;
+            document.getElementById('amount').innerText = "₹" + fare;
+            document.getElementById('fareResult').classList.remove('hidden');
+        }
+
+        db.collection("drivers").where("isOnline", "==", true)
+            .onSnapshot((snapshot) => {
+                const list = document.getElementById('driverList');
+                list.innerHTML = "";
+                snapshot.forEach((doc) => {
+                    const d = doc.data();
+                    list.innerHTML += `
+                        <div class="bg-white p-4 rounded-xl shadow-sm flex justify-between items-center border-l-4 border-yellow-400">
+                            <div>
+                                <p class="font-bold text-gray-800">${d.name}</p>
+                                <p class="text-xs text-gray-500">${d.autoNumber}</p>
+                            </div>
+                            <a href="tel:${d.phone}" class="bg-green-500 text-white p-3 rounded-full"><i class="fa-solid fa-phone"></i></a>
+                        </div>`;
+                });
+            });
+
+        function toggleDriverStatus() {
+            isDriverOnline = !isDriverOnline;
+            const btn = document.getElementById('driverBtn');
+            const indicator = document.getElementById('statusIndicator');
+
+            if (isDriverOnline) {
+                navigator.geolocation.getCurrentPosition(pos => {
+                    db.collection("drivers").doc(driverId).set({
+                        name: "Rajesh Kumar",
+                        phone: "9876543210",
+                        autoNumber: "KA-01-1234",
+                        isOnline: true,
+                        lat: pos.coords.latitude,
+                        lng: pos.coords.longitude
+                    });
+                    btn.innerText = "GO OFFLINE";
+                    btn.className = "w-full bg-red-600 py-2 rounded font-bold transition";
+                    indicator.className = "h-3 w-3 bg-green-500 rounded-full border border-white";
+                });
+            } else {
+                db.collection("drivers").doc(driverId).update({ isOnline: false });
+                btn.innerText = "GO ONLINE";
+                btn.className = "w-full bg-gray-600 py-2 rounded font-bold transition";
+                indicator.className = "h-3 w-3 bg-red-500 rounded-full border border-white";
+            }
+        }
+    </script>
+</body>
+</html>
